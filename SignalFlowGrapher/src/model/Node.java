@@ -5,35 +5,35 @@ import java.util.Hashtable;
 
 public class Node {
 
-    private int number;
-    private Hashtable<Integer, Edge> edges;
+    private String name;
+    private Hashtable<String, Edge> edges;
 
-    public Node(int number) {
-        this.number = number;
+    public Node(String name) {
+        this.name = name;
         edges = new Hashtable<>();
     }
 
-    public boolean addEdge(int to, int cost) {
+    public boolean addEdge(String to, int cost) {
         if (edges.containsKey(to)) {
             return false;
         }
-        edges.put(new Integer(to), new Edge(number, to, cost));
+        edges.put(to, new Edge(name, to, cost));
         return true;
     }
 
-    public boolean removeEdge(int to) {
+    public boolean removeEdge(String to) {
         if (!edges.containsKey(to)) {
             return false;
         }
-        edges.remove(new Integer(to));
+        edges.remove(to);
         return true;
     }
 
-    public boolean modifyCost(int to, int cost) {
-        if (!edges.containsKey(new Integer(to))) {
+    public boolean modifyCost(String to, int cost) {
+        if (!edges.containsKey(to)) {
             return false;
         }
-        edges.get(new Integer(to)).modifyCost(cost);
+        edges.get(to).modifyCost(cost);
         return true;
     }
 
