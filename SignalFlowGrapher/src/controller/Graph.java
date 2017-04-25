@@ -1,10 +1,9 @@
 package controller;
 
-import java.lang.reflect.Array;
-import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Stack;
 
 import model.Edge;
 import model.Node;
@@ -14,7 +13,7 @@ public class Graph {
 
     private static Graph graph;
 
-    private Hashtable<String, Node> nodes;
+    private Hashtable<Integer, Node> nodes;
 
     private ArrayList<Pair> forwardPaths;
 
@@ -24,7 +23,7 @@ public class Graph {
 
     private ArrayList<Integer> deltas;
 
-    private int gain;
+    private double gain;
 
     private static final int initial = 1;
 
@@ -37,7 +36,7 @@ public class Graph {
         deltas = new ArrayList<>();
     }
 
-    public boolean addNode(String name) {
+    public boolean addNode(int name) {
         if (nodes.containsKey(name)) {
             return false;
         }
@@ -54,25 +53,27 @@ public class Graph {
         return true;
     }
 
-    public boolean addEdge(String from, String to, int cost) {
+    public boolean addEdge(int from, int to, int cost) {
         if (!nodes.containsKey(from)) {
             return false;
         }
         return nodes.get(from).addEdge(to, cost);
     }
 
-    public boolean removeEdge(String from, String to) {
+    public boolean removeEdge(int from, int to) {
         if (!nodes.containsKey(from)) {
             return false;
         }
         return nodes.get(from).removeEdge(to);
     }
 
-    public boolean solve(String from, String to) {
+    public boolean solve(Integer from, Integer to) {
         if (!nodes.containsKey(from) && !nodes.containsKey(to)) {
             return false;
         }
-        findForwardPathes(initial, from, to, new ArrayList<>());
+        ArrayList<Integer> tmpy = new ArrayList<>();
+        tmpy.add(from);
+        findForwardPathes(initial, from, to, tmpy);
         ArrayList<Integer> gains = new ArrayList<>();
         gains.add(initial);
         findLoops(initial, from, new ArrayList<>(), gains);
@@ -82,7 +83,16 @@ public class Graph {
             Integer val = findDelta(tmp, new ArrayList<>(), 0, 1, initial);
             deltas.add(val);
         }
+        gain = 0;
+        for (int i = 0; i < forwardPaths.size(); i++) {
+            gain = gain + forwardPaths.get(i).getGain() * deltas.get(i);
+        }
+        gain = gain / delta;
         return true;
+    }
+
+    public double getGain() {
+        return gain;
     }
 
     public ArrayList<Pair> getForwardPaths() {
@@ -101,27 +111,45 @@ public class Graph {
         return delta;
     }
 
-    private void findForwardPathes(int gain, String current, String dist, ArrayList<String> path) {
-        if (current.equalsIgnoreCase(dist)) {
-            forwardPaths.add(new Pair(path, gain));
+    private void filterLoops() {
+        ArrayList<Pair> tmp = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> tmp2 = new ArrayList<>();
+        boolean flag;
+        for(int i = 0 ; i < loops.size() ; i++){
+            
+        }
+        for (int i = 0; i < loops.size(); i++) {
+            flag = true;
+            for (int j = i + 1; j < loops.size(); j++) {
+                
+            }
+            if(flag){
+                tmp.add(loops.get(i));
+            }
+        }
+        loops = tmp;
+    }
+
+    private void findForwardPathes(int gain, Integer current, Integer dist, ArrayList<Integer> path) {
+        if (current == dist) {
+            ArrayList<Integer> tmp = (ArrayList<Integer>) path.clone();
+            forwardPaths.add(new Pair(tmp, gain));
             return;
         }
-        path.add(current);
         Node node = nodes.get(current);
         ArrayList<Edge> edges = node.getEdges();
         for (Edge edge : edges) {
-            if (!path.contains(edge)) {
+            if (!path.contains(edge.getDestination())) {
                 path.add(edge.getDestination());
                 findForwardPathes(gain * edge.getCost(), edge.getDestination(), dist, path);
                 path.remove(path.size() - 1);
             }
         }
-        path.remove(path.size() - 1);
     }
 
-    private void findLoops(int gain, String current, ArrayList<String> loop, ArrayList<Integer> gains) {
-        if (loops.contains(current)) {
-            loops.add(new Pair(new ArrayList<String>(loop.subList(loop.indexOf(current), loop.size() - 1)),
+    private void findLoops(int gain, Integer current, ArrayList<Integer> loop, ArrayList<Integer> gains) {
+        if (loop.contains(current)) {
+            loops.add(new Pair(new ArrayList<Integer>(loop.subList(loop.indexOf(current), loop.size())),
                     gain / gains.get(loop.indexOf(current))));
             return;
         }
@@ -138,7 +166,7 @@ public class Graph {
 
     private ArrayList<Pair> filterPath(Pair pair) {
         ArrayList<Pair> tmp = new ArrayList<>();
-        ArrayList<ArrayList<String>> cond = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> cond = new ArrayList<>();
         cond.add(pair.getPath());
         for (int i = 0; i < loops.size(); i++) {
             cond.add(loops.get(i).getPath());
@@ -150,7 +178,7 @@ public class Graph {
         return tmp;
     }
 
-    private Integer findDelta(ArrayList<Pair> list, ArrayList<ArrayList<String>> listSoFar, int start, int sign,
+    private Integer findDelta(ArrayList<Pair> list, ArrayList<ArrayList<Integer>> listSoFar, int start, int sign,
             int gain) {
         int general = 0;
         if (check(listSoFar)) {
@@ -164,8 +192,8 @@ public class Graph {
         return general;
     }
 
-    private boolean check(ArrayList<ArrayList<String>> list) {
-        HashMap<String, Integer> tmp = new HashMap<>();
+    private boolean check(ArrayList<ArrayList<Integer>> list) {
+        HashMap<Integer, Integer> tmp = new HashMap<>();
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).size(); j++) {
                 if (tmp.containsKey(list.get(i).get(j)))
@@ -176,7 +204,7 @@ public class Graph {
         return true;
     }
 
-    public Graph getInstance() {
+    public static Graph getInstance() {
         if (graph == null) {
             graph = new Graph();
         }

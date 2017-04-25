@@ -5,15 +5,15 @@ import java.util.Hashtable;
 
 public class Node {
 
-    private String name;
-    private Hashtable<String, Edge> edges;
+    private int name;
+    private Hashtable<Integer, Edge> edges;
 
-    public Node(String name) {
+    public Node(int name) {
         this.name = name;
         edges = new Hashtable<>();
     }
 
-    public boolean addEdge(String to, int cost) {
+    public boolean addEdge(int to, int cost) {
         if (edges.containsKey(to)) {
             return false;
         }
@@ -21,7 +21,7 @@ public class Node {
         return true;
     }
 
-    public boolean removeEdge(String to) {
+    public boolean removeEdge(int to) {
         if (!edges.containsKey(to)) {
             return false;
         }
@@ -29,7 +29,7 @@ public class Node {
         return true;
     }
 
-    public boolean modifyCost(String to, int cost) {
+    public boolean modifyCost(int to, int cost) {
         if (!edges.containsKey(to)) {
             return false;
         }
@@ -38,7 +38,7 @@ public class Node {
     }
 
     public ArrayList<Edge> getEdges() {
-        return (ArrayList<Edge>) edges.values();
+        return new ArrayList<>(edges.values());
     }
 
 }

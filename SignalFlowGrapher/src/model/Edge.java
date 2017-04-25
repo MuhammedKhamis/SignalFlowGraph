@@ -2,11 +2,11 @@ package model;
 
 public class Edge {
 
-    private String from;
-    private String to;
+    private int from;
+    private int to;
     private int cost;
 
-    public Edge(String from, String to, int cost) {
+    public Edge(int from, int to, int cost) {
         this.cost = cost;
         this.to = to;
         this.from = from;
@@ -16,11 +16,11 @@ public class Edge {
         this.cost = cost;
     }
 
-    public String getSource() {
+    public int getSource() {
         return from;
     }
 
-    public String getDestination() {
+    public int getDestination() {
         return to;
     }
 
