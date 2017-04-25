@@ -1,6 +1,9 @@
 package controller;
 
+import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Stack;
@@ -77,6 +80,7 @@ public class Graph {
         ArrayList<Integer> gains = new ArrayList<>();
         gains.add(initial);
         findLoops(initial, from, new ArrayList<>(), gains);
+        filterLoops();
         delta = findDelta(loops, new ArrayList<>(), 0, 1, initial);
         for (int i = 0; i < forwardPaths.size(); i++) {
             ArrayList<Pair> tmp = filterPath(forwardPaths.get(i));
@@ -113,21 +117,34 @@ public class Graph {
 
     private void filterLoops() {
         ArrayList<Pair> tmp = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> tmp2 = new ArrayList<>();
         boolean flag;
-        for(int i = 0 ; i < loops.size() ; i++){
-            
+        for (int i = 0; i < loops.size(); i++) {
+            Collections.sort(loops.get(i).getPath());
         }
         for (int i = 0; i < loops.size(); i++) {
             flag = true;
             for (int j = i + 1; j < loops.size(); j++) {
-                
+                if (areEqual(loops.get(i).getPath(), loops.get(j).getPath())) {
+                    flag = false;
+                }
             }
-            if(flag){
+            if (flag) {
                 tmp.add(loops.get(i));
             }
         }
         loops = tmp;
+    }
+
+    private boolean areEqual(ArrayList<Integer> l1, ArrayList<Integer> l2) {
+        if (l2.size() != l1.size()) {
+            return false;
+        }
+        for (int i = 0; i < l1.size(); i++) {
+            if (l1.get(i) != l2.get(i)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void findForwardPathes(int gain, Integer current, Integer dist, ArrayList<Integer> path) {
