@@ -11,17 +11,29 @@ public class ControllerMain {
         g.addNode(3);
         g.addNode(4);
         g.addNode(5);
+        g.addNode(6);
+        g.addNode(7);
+        g.addNode(8);
+        g.addNode(9);
+        ////////////////////////////
         g.addEdge(0, 1, 1);
         g.addEdge(1, 2, 1);
         g.addEdge(2, 3, 1);
         g.addEdge(3, 4, 1);
         g.addEdge(4, 5, 1);
-        g.addEdge(1, 3, 1);
-        g.addEdge(1, 4, 1);
-        g.addEdge(3, 3, -1);
-        g.addEdge(3, 2, -1);
+        g.addEdge(5, 6, 1);
+        g.addEdge(6, 7, 1);
+        g.addEdge(7, 8, 1);
+        g.addEdge(8, 9, 1);
+        ////////////////////////////////
         g.addEdge(2, 1, -1);
-        g.solve(0, 5);
+        g.addEdge(4, 3, -1);
+        g.addEdge(6, 5, -1);
+        g.addEdge(8, 7, -1);
+        ////////////////////////////////
+        g.solve(0, 9);
+        ///////////////////////////
+        System.out.println(g.getGain());
 
     }
 
