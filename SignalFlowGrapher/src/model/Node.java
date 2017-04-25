@@ -13,7 +13,7 @@ public class Node {
         edges = new Hashtable<>();
     }
 
-    public boolean addEdge(int to, int cost) {
+    public boolean addEdge(int to, double cost) {
         if (edges.containsKey(to)) {
             return false;
         }
@@ -29,7 +29,7 @@ public class Node {
         return true;
     }
 
-    public boolean modifyCost(int to, int cost) {
+    public boolean modifyCost(int to, double cost) {
         if (!edges.containsKey(to)) {
             return false;
         }

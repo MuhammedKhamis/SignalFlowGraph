@@ -6,9 +6,9 @@ public class Pair {
 
     private ArrayList<Integer> path;
 
-    private int gain;
+    private double gain;
 
-    public Pair(ArrayList<Integer> path, int gain) {
+    public Pair(ArrayList<Integer> path, double gain) {
         this.gain = gain;
         this.path = path;
     }
@@ -17,7 +17,7 @@ public class Pair {
         return path;
     }
 
-    public int getGain() {
+    public double getGain() {
         return gain;
     }
 

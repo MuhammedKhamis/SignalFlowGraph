@@ -1,12 +1,10 @@
 package controller;
 
-import java.awt.Image;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Stack;
 
 import model.Edge;
 import model.Node;
@@ -22,13 +20,13 @@ public class Graph {
 
     private ArrayList<Pair> loops;
 
-    private int delta;
+    private double delta;
 
-    private ArrayList<Integer> deltas;
+    private ArrayList<Double> deltas;
 
     private double gain;
 
-    private static final int initial = 1;
+    private static final double initial = 1;
 
     private Graph() {
         gain = 0;
@@ -48,19 +46,32 @@ public class Graph {
 
     }
 
-    public boolean removeNode(String name) {
+    public boolean removeNode(Integer name) {
         if (!nodes.containsKey(name)) {
             return false;
+        }
+        Enumeration<Integer> enumKey = nodes.keys();
+        while (enumKey.hasMoreElements()) {
+            Integer key = enumKey.nextElement();
+            Node node = nodes.get(key);
+            node.removeEdge(name);
         }
         nodes.remove(name);
         return true;
     }
-
-    public boolean addEdge(int from, int to, int cost) {
+    
+    public boolean addEdge(Integer from, Integer to, Double cost) {
         if (!nodes.containsKey(from)) {
             return false;
         }
         return nodes.get(from).addEdge(to, cost);
+    }
+
+    public boolean modifyCost(Integer from, Integer to, double cost) {
+        if (!nodes.contains(from) || !nodes.containsKey(to)) {
+            return false;
+        }
+        return nodes.get(from).modifyCost(to, cost);
     }
 
     public boolean removeEdge(int from, int to) {
@@ -71,20 +82,20 @@ public class Graph {
     }
 
     public boolean solve(Integer from, Integer to) {
-        if (!nodes.containsKey(from) && !nodes.containsKey(to)) {
+        if (!nodes.containsKey(from) || !nodes.containsKey(to)) {
             return false;
         }
         ArrayList<Integer> tmpy = new ArrayList<>();
         tmpy.add(from);
         findForwardPathes(initial, from, to, tmpy);
-        ArrayList<Integer> gains = new ArrayList<>();
+        ArrayList<Double> gains = new ArrayList<>();
         gains.add(initial);
         findLoops(initial, from, new ArrayList<>(), gains);
         filterLoops();
         delta = findDelta(loops, new ArrayList<>(), 0, 1, initial);
         for (int i = 0; i < forwardPaths.size(); i++) {
             ArrayList<Pair> tmp = filterPath(forwardPaths.get(i));
-            Integer val = findDelta(tmp, new ArrayList<>(), 0, 1, initial);
+            Double val = findDelta(tmp, new ArrayList<>(), 0, 1, initial);
             deltas.add(val);
         }
         gain = 0;
@@ -107,11 +118,11 @@ public class Graph {
         return loops;
     }
 
-    public ArrayList<Integer> getDeltas() {
+    public ArrayList<Double> getDeltas() {
         return deltas;
     }
 
-    public int getDelta() {
+    public double getDelta() {
         return delta;
     }
 
@@ -147,7 +158,7 @@ public class Graph {
         return true;
     }
 
-    private void findForwardPathes(int gain, Integer current, Integer dist, ArrayList<Integer> path) {
+    private void findForwardPathes(double gain, Integer current, Integer dist, ArrayList<Integer> path) {
         if (current == dist) {
             ArrayList<Integer> tmp = (ArrayList<Integer>) path.clone();
             forwardPaths.add(new Pair(tmp, gain));
@@ -164,7 +175,7 @@ public class Graph {
         }
     }
 
-    private void findLoops(int gain, Integer current, ArrayList<Integer> loop, ArrayList<Integer> gains) {
+    private void findLoops(double gain, Integer current, ArrayList<Integer> loop, ArrayList<Double> gains) {
         if (loop.contains(current)) {
             loops.add(new Pair(new ArrayList<Integer>(loop.subList(loop.indexOf(current), loop.size())),
                     gain / gains.get(loop.indexOf(current))));
@@ -195,9 +206,9 @@ public class Graph {
         return tmp;
     }
 
-    private Integer findDelta(ArrayList<Pair> list, ArrayList<ArrayList<Integer>> listSoFar, int start, int sign,
-            int gain) {
-        int general = 0;
+    private Double findDelta(ArrayList<Pair> list, ArrayList<ArrayList<Integer>> listSoFar, int start, int sign,
+            double gain) {
+        double general = 0;
         if (check(listSoFar)) {
             for (int i = start; i < list.size(); i++) {
                 listSoFar.add(list.get(i).getPath());

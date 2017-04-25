@@ -4,15 +4,15 @@ public class Edge {
 
     private int from;
     private int to;
-    private int cost;
+    private double cost;
 
-    public Edge(int from, int to, int cost) {
+    public Edge(int from, int to, double cost) {
         this.cost = cost;
         this.to = to;
         this.from = from;
     }
 
-    public void modifyCost(int cost) {
+    public void modifyCost(double cost) {
         this.cost = cost;
     }
 
@@ -24,7 +24,7 @@ public class Edge {
         return to;
     }
 
-    public Integer getCost() {
-        return new Integer(cost);
+    public Double getCost() {
+        return new Double(cost);
     }
 }
