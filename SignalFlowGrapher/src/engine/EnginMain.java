@@ -10,7 +10,11 @@ public class EnginMain {
         engine.addNode("g2");
         engine.addEdge("g0", "g1", 113);
         engine.addEdge("g1", "g2", 60);
+        engine.modifyEdgeValue("g0", "g1", 60);
         double result = engine.calculateTFFunction("g0", "g2");
+        System.out.println(result);
+        engine.modifyEdgeValue("g0", "g1", 80);
+        result = engine.calculateTFFunction("g0", "g2");
         System.out.println(result);
     }
 

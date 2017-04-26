@@ -20,6 +20,8 @@ public class Graph {
 
     private ArrayList<Pair> loops;
 
+    private Hashtable<Integer, ArrayList<ArrayList<ArrayList<Integer>>>> combinations;
+
     private double delta;
 
     private ArrayList<Double> deltas;
@@ -35,6 +37,7 @@ public class Graph {
         loops = new ArrayList<>();
         delta = 0;
         deltas = new ArrayList<>();
+        combinations = new Hashtable<>();
     }
 
     public boolean addNode(int name) {
@@ -68,7 +71,7 @@ public class Graph {
     }
 
     public boolean modifyCost(Integer from, Integer to, double cost) {
-        if (!nodes.contains(from) || !nodes.containsKey(to)) {
+        if (!nodes.containsKey(from) || !nodes.containsKey(to)) {
             return false;
         }
         return nodes.get(from).modifyCost(to, cost);
@@ -85,6 +88,7 @@ public class Graph {
         if (!nodes.containsKey(from) || !nodes.containsKey(to)) {
             return false;
         }
+        reset();
         ArrayList<Integer> tmpy = new ArrayList<>();
         tmpy.add(from);
         findForwardPathes(initial, from, to, tmpy);
@@ -92,10 +96,10 @@ public class Graph {
         gains.add(initial);
         findLoops(initial, from, new ArrayList<>(), gains);
         filterLoops();
-        delta = findDelta(loops, new ArrayList<>(), 0, 1, initial);
+        delta = findDelta(loops, new ArrayList<>(), 0, 1, initial, true);
         for (int i = 0; i < forwardPaths.size(); i++) {
             ArrayList<Pair> tmp = filterPath(forwardPaths.get(i));
-            Double val = findDelta(tmp, new ArrayList<>(), 0, 1, initial);
+            Double val = findDelta(tmp, new ArrayList<>(), 0, 1, initial, false);
             deltas.add(val);
         }
         gain = 0;
@@ -116,6 +120,10 @@ public class Graph {
 
     public ArrayList<Pair> getLoops() {
         return loops;
+    }
+
+    public Hashtable<Integer, ArrayList<ArrayList<ArrayList<Integer>>>> getCombinations() {
+        return combinations;
     }
 
     public ArrayList<Double> getDeltas() {
@@ -207,12 +215,19 @@ public class Graph {
     }
 
     private Double findDelta(ArrayList<Pair> list, ArrayList<ArrayList<Integer>> listSoFar, int start, int sign,
-            double gain) {
+            double gain, boolean combination) {
         double general = 0;
         if (check(listSoFar)) {
+            if (combination && listSoFar.size() >= 2) {
+                if (combinations.containsKey(listSoFar.size())) {
+                    combinations.get(listSoFar.size()).add((ArrayList<ArrayList<Integer>>) listSoFar.clone());
+                } else {
+                    combinations.put(listSoFar.size(), (ArrayList<ArrayList<ArrayList<Integer>>>) listSoFar.clone());
+                }
+            }
             for (int i = start; i < list.size(); i++) {
                 listSoFar.add(list.get(i).getPath());
-                general = general + findDelta(list, listSoFar, i, sign * -1, list.get(i).getGain() * gain);
+                general = general + findDelta(list, listSoFar, i, sign * -1, list.get(i).getGain() * gain, combination);
                 listSoFar.remove(listSoFar.size() - 1);
             }
             general = general + sign * gain;
@@ -240,7 +255,17 @@ public class Graph {
     }
 
     public static Graph clearObject() {
-        return new Graph();
+        return graph = new Graph();
+    }
+
+    private void reset() {
+        forwardPaths = new ArrayList<>();
+        loops = new ArrayList<>();
+        delta = 0;
+        deltas = new ArrayList<>();
+        gain = 0;
+        combinations = new Hashtable<>();
+
     }
 
 }

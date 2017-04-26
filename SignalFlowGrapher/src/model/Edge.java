@@ -28,3 +28,4 @@ public class Edge {
         return new Double(cost);
     }
 }
+
