@@ -59,7 +59,7 @@ public class Graph {
         nodes.remove(name);
         return true;
     }
-    
+
     public boolean addEdge(Integer from, Integer to, Double cost) {
         if (!nodes.containsKey(from)) {
             return false;
@@ -237,6 +237,10 @@ public class Graph {
             graph = new Graph();
         }
         return graph;
+    }
+
+    public static Graph clearObject() {
+        return new Graph();
     }
 
 }
