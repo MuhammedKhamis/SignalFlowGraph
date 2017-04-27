@@ -1,35 +1,28 @@
-package engine;
-
-import java.util.ArrayList;
-import java.util.Hashtable;
+package Logic;
 
 public interface IEngine {
 
     // ADD COMPONENET
     public void addNode(String nodeName);
-
     public void addEdge(String fromNode, String toNode, double value);
 
     // MODIFY COMPONENT
     public void modifyNodeName(String oldName, String newName);
-
     public void modifyEdgeValue(String startNode, String endNode, double newValue);
 
     // REMOVE COMPONENT
+    public void clearCanvas();
 
     // CALCULATE TRANSFER FUNCTION
     public double calculateTFFunction(String fromNode, String toNode);
 
     public String getForwardPaths();
-
-    public String getLoops();
-
-    public String getCombinations();
-
-    public String getDelta();
-
+    public String getIndividualLoops();
+    public String getNonTouchingLoops();
     public String getDeltas();
 
-    public void clearCanvas();
+   
+
+    
 
 }

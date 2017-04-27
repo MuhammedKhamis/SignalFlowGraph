@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,9 +6,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import model.Edge;
-import model.Node;
-import util.Pair;
+import Model.Edge;
+import Model.Node;
+import Util.Pair;
 
 public class Graph {
 

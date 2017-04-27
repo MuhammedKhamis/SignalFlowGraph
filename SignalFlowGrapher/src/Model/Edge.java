@@ -1,4 +1,5 @@
-package model;
+package Model;
+
 
 public class Edge {
 
@@ -28,4 +29,3 @@ public class Edge {
         return new Double(cost);
     }
 }
-

@@ -1,4 +1,5 @@
-package model;
+package Model;
+
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -42,5 +43,3 @@ public class Node {
     }
 
 }
-
-

@@ -1,12 +1,12 @@
-package engine;
+package Logic;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import controller.Graph;
-import util.Pair;
+import Controller.Graph;
+import Util.Pair;
 
 public class Engine implements IEngine {
 
@@ -18,15 +18,13 @@ public class Engine implements IEngine {
 
     private Graph graph;
 
-    private double gain;
-
     public Engine() {
         // TODO Auto-generated constructor stub
         map = new HashMap<>();
         map1 = new HashMap<>();
         counter = 0;
         graph = Graph.getInstance();
-        gain = 0;
+
     }
 
     @Override
@@ -79,7 +77,7 @@ public class Engine implements IEngine {
             return 0.0;
         }
         graph.solve(map.get(fromNode), map.get(toNode));
-        return gain = graph.getGain();
+        return graph.getGain();
     }
 
     public String getForwardPaths() {
@@ -95,7 +93,7 @@ public class Engine implements IEngine {
         return turnToString(forwardPathes);
     }
 
-    public String getLoops() {
+    public String getIndividualLoops() {
         ArrayList<Pair> tmp = graph.getLoops();
         ArrayList<ArrayList<String>> loops = new ArrayList<>();
         for (int i = 0; i < tmp.size(); i++) {
@@ -108,7 +106,7 @@ public class Engine implements IEngine {
         return turnToString(loops);
     }
 
-    public String getCombinations() {
+    public String getNonTouchingLoops() {
         Hashtable<Integer, ArrayList<ArrayList<ArrayList<Integer>>>> combinations = graph.getCombinations();
         Hashtable<Integer, ArrayList<ArrayList<ArrayList<String>>>> res = new Hashtable<>();
         Hashtable<Integer, ArrayList<String>> finalRes = new Hashtable<>();
@@ -135,53 +133,34 @@ public class Engine implements IEngine {
             Integer key = enumKey.nextElement();
             ArrayList<ArrayList<ArrayList<String>>> tmp = res.get(key);
             ArrayList<String> tmp2 = new ArrayList<>();
-            for (int i = 0; i < tmp.size() - 1; i++) {
-                tmp2.add(turnToString(tmp.get(i)) + ", ");
+            for (int i = 0; i < tmp.size()-1; i++) {
+                tmp2.add(turnToString(tmp.get(i))+", ");
             }
-            tmp2.add(turnToString(tmp.get(tmp.size() - 1)));
+            tmp2.add(turnToString(tmp.get(tmp.size()-1)));
             finalRes.put(key, tmp2);
         }
+
 
         return hashToString(finalRes);
     }
 
-    public String getGain() {
-        return String.valueOf(gain);
-    }
-
-    public String getDelta() {
-        return "Delta: " + String.valueOf(graph.getDelta());
-    }
-
     public String getDeltas() {
+    	String result="Main Delta : "+String.valueOf(graph.getDelta());
+    	result+="\n";
         ArrayList<Double> tmp = graph.getDeltas();
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < tmp.size(); i++) {
             builder.append("Delta " + (i + 1) + ": " + tmp.get(i) + "\n");
         }
-        return builder.toString();
-    }
-
-    private String hashToString(Hashtable<Integer, ArrayList<String>> hashtable) {
-        StringBuilder builder = new StringBuilder();
-        Enumeration<Integer> enumKey = hashtable.keys();
-        while (enumKey.hasMoreElements()) {
-            Integer key = enumKey.nextElement();
-            ArrayList<String> tmp = hashtable.get(key);
-            builder.append(key + " Non-Touching Loops\n");
-            for (int i = 0; i < tmp.size(); i++) {
-                builder.append(tmp.get(i) + "\n");
-            }
-        }
-        return builder.toString();
+        result+=builder.toString();
+        return result;
     }
 
     public void clearCanvas() {
-        graph = Graph.clearObject();
+    	graph = Graph.clearObject();
         map1 = new HashMap<>();
         map = new HashMap<>();
         counter = 0;
-        gain = 0;
     }
 
     private String turnToString(ArrayList<ArrayList<String>> input) {
@@ -195,6 +174,21 @@ public class Engine implements IEngine {
             builder.append("\n");
         }
 
+        return builder.toString();
+    }
+    
+    
+    private String hashToString(Hashtable<Integer, ArrayList<String>> hashtable) {
+        StringBuilder builder = new StringBuilder();
+        Enumeration<Integer> enumKey = hashtable.keys();
+        while (enumKey.hasMoreElements()) {
+            Integer key = enumKey.nextElement();
+            ArrayList<String> tmp = hashtable.get(key);
+            builder.append(key + " Non-Touching Loops\n");
+            for (int i = 0; i < tmp.size(); i++) {
+                builder.append(tmp.get(i) + "\n");
+            }
+        }
         return builder.toString();
     }
 
