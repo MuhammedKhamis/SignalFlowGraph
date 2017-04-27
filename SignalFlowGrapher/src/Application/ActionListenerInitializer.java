@@ -59,21 +59,43 @@ public class ActionListenerInitializer {
 	    		
 	    		SFGNode fromNode=appElements.getNodeList().get(fromNodeName);
 	    		SFGNode toNode=appElements.getNodeList().get(toNodeName);
+	    		
+	    		//check nodes don't exist
+	    		if((fromNode!=null)&&(toNode!=null)){
+	    			
+	    			double value=Double.valueOf(appElements.getAddPathValue().getText());
+		    	    SFGEdge edge=new SFGEdge(fromNode, toNode, value);
+		    	    
+		    	    //check duplicate edges
+		    	    if(!edgeExists(fromNodeName, toNodeName)){
+		    	    	//check self loop condition
+		    	    	if(!fromNodeName.equalsIgnoreCase(toNodeName)){
+		    	    		//generic case
+			    	    	appElements.getCanvas().getChildren().removeAll(fromNode.getCircle(), toNode.getCircle());
+				    		appElements.getCanvas().getChildren().addAll(edge.getEdge(), edge.getDisplayValue(), edge.getArrowShape(), fromNode.getCircle(), toNode.getCircle());
+			    	    }else{
+			    	    	//self loop case
+			    	    	appElements.getCanvas().getChildren().remove(fromNode.getCircle());
+				    		appElements.getCanvas().getChildren().addAll(edge.getEdge(), edge.getDisplayValue(), edge.getArrowShape(), fromNode.getCircle());
+			    	    }
+		    	    	
+			    		//back-end implementation
+			    	    appElements.getEdgeList().add(edge);
+			    		appElements.getAppEngine().addEdge(fromNodeName, toNodeName, value);
+			    		
+			    		
+			    		setEdgeHighLightEvent(edge, edge.getEdge());
+			    		setEdgeHighLightEvent(edge, edge.getDisplayValue());
+		    	    }else{
+		    	    	appElements.getResultValue().setText("EDGE ALREADY EXISTS!!");
+		    	    }
+	    		}else{
+	    			appElements.getResultValue().setText("NO SUCH NODE(S)!!");
+	    		}
+	    		
 	    	    
-	    	    double value=Double.valueOf(appElements.getAddPathValue().getText());
-	    	    SFGEdge edge=new SFGEdge(fromNode, toNode, value);
-	
-	    		appElements.getCanvas().getChildren().removeAll(fromNode.getCircle(), toNode.getCircle());
-	    		appElements.getCanvas().getChildren().addAll(edge.getEdge(), edge.getDisplayValue(), edge.getArrowShape(), fromNode.getCircle(), toNode.getCircle());
-	    		appElements.getEdgeList().add(edge);
-	    		//back-end implementation
+	    	    resetTextFields();
 
-	    		appElements.getAppEngine().addEdge(fromNodeName, toNodeName, value);
-	    		
-	    		resetTextFields();
-	    		
-	    		setEdgeHighLightEvent(edge, edge.getEdge());
-	    		setEdgeHighLightEvent(edge, edge.getDisplayValue());
     	});
 		
 		
@@ -218,6 +240,19 @@ public class ActionListenerInitializer {
 			nodeName="n"+id;
 		}
 		return nodeName;
+	}
+	
+	private boolean edgeExists(String fromNode, String toNode){
+		for(SFGEdge edge:appElements.getEdgeList()){
+			String tmpFromName=edge.getStartNode();
+			String tmpToName=edge.getEndNode();
+			if(fromNode.equalsIgnoreCase(tmpFromName)){
+				if(toNode.equalsIgnoreCase(tmpToName)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	

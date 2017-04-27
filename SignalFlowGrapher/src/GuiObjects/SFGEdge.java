@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.QuadCurve;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 
 public class SFGEdge {
@@ -50,6 +51,7 @@ public class SFGEdge {
 		edge.setFill( null);
 
 		setEdgeDragEvent(edge);
+		//setEdgeDragEvent(displayValue);
 		
 		arrow=new Arrow(edge);
 		
@@ -73,17 +75,17 @@ public class SFGEdge {
 	//*************************************************************
 	
 	//PATH DRAG EVENT
-	private void setEdgeDragEvent(QuadCurve curve){
-		curve.setOnMousePressed(e ->{
+	private void setEdgeDragEvent(Shape shape){
+		shape.setOnMousePressed(e ->{
 			cursorOriginalX=e.getX();
 			cursorOriginalY=e.getY();
 		});
-		curve.setOnMouseDragged(e ->{
+		shape.setOnMouseDragged(e ->{
 			double deltaX=e.getX()-cursorOriginalX;
 			double deltaY=e.getY()-cursorOriginalY;
 			
-			curve.setControlX(cursorOriginalX+deltaX);
-			curve.setControlY(cursorOriginalY+deltaY);
+			edge.setControlX(cursorOriginalX+deltaX);
+			edge.setControlY(cursorOriginalY+deltaY);
 			
 			arrow.updateRotate();
 		});
