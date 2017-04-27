@@ -80,7 +80,7 @@ public class Engine implements IEngine {
         return graph.getGain();
     }
 
-    public ArrayList<ArrayList<String>> getForwardPaths() {
+    public String getForwardPaths() {
         ArrayList<Pair> tmp = graph.getForwardPaths();
         ArrayList<ArrayList<String>> forwardPathes = new ArrayList<>();
         for (int i = 0; i < tmp.size(); i++) {
@@ -90,10 +90,10 @@ public class Engine implements IEngine {
             }
             forwardPathes.add(sub);
         }
-        return forwardPathes;
+        return turnToString(forwardPathes);
     }
 
-    public ArrayList<ArrayList<String>> getLoops() {
+    public String getLoops() {
         ArrayList<Pair> tmp = graph.getLoops();
         ArrayList<ArrayList<String>> loops = new ArrayList<>();
         for (int i = 0; i < tmp.size(); i++) {
@@ -103,12 +103,13 @@ public class Engine implements IEngine {
             }
             loops.add(sub);
         }
-        return loops;
+        return turnToString(loops);
     }
 
-    public Hashtable<Integer, ArrayList<ArrayList<ArrayList<String>>>> getCombinations() {
+    public Hashtable<Integer, ArrayList<String>> getCombinations() {
         Hashtable<Integer, ArrayList<ArrayList<ArrayList<Integer>>>> combinations = graph.getCombinations();
         Hashtable<Integer, ArrayList<ArrayList<ArrayList<String>>>> res = new Hashtable<>();
+        Hashtable<Integer, ArrayList<String>> finalRes = new Hashtable<>();
         Enumeration<Integer> enumKey = combinations.keys();
         while (enumKey.hasMoreElements()) {
             Integer key = enumKey.nextElement();
@@ -127,19 +128,51 @@ public class Engine implements IEngine {
             }
             res.put(key, tmp);
         }
-        return res;
+        enumKey = res.keys();
+        while (enumKey.hasMoreElements()) {
+            Integer key = enumKey.nextElement();
+            ArrayList<ArrayList<ArrayList<String>>> tmp = res.get(key);
+            ArrayList<String> tmp2 = new ArrayList<>();
+            for (int i = 0; i < tmp.size()-1; i++) {
+                tmp2.add(turnToString(tmp.get(i))+", ");
+            }
+            tmp2.add(turnToString(tmp.get(tmp.size()-1)));
+            finalRes.put(key, tmp2);
+        }
+
+
+        return finalRes;
     }
 
-    public double getDelta() {
-        return graph.getDelta();
+    public String getDelta() {
+        return "Delta: " +String.valueOf(graph.getDelta());
     }
 
-    public ArrayList<Double> getDeltas() {
-        return graph.getDeltas();
+    public String getDeltas() {
+        ArrayList<Double> tmp = graph.getDeltas();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < tmp.size(); i++) {
+            builder.append("Delta " + (i + 1) + ": " + tmp.get(i) + "\n");
+        }
+        return builder.toString();
     }
 
     public void clearCanvas() {
         graph = Graph.clearObject();
+    }
+
+    private String turnToString(ArrayList<ArrayList<String>> input) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < input.size(); i++) {
+            builder.append((i + 1) + ": ");
+            for (int j = 0; j < input.get(i).size() - 1; j++) {
+                builder.append(input.get(i).get(j) + "->");
+            }
+            builder.append(input.get(i).get(input.get(i).size() - 1));
+            builder.append("\n");
+        }
+
+        return builder.toString();
     }
 
 }

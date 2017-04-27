@@ -222,7 +222,8 @@ public class Graph {
                 if (combinations.containsKey(listSoFar.size())) {
                     combinations.get(listSoFar.size()).add((ArrayList<ArrayList<Integer>>) listSoFar.clone());
                 } else {
-                    combinations.put(listSoFar.size(), (ArrayList<ArrayList<ArrayList<Integer>>>) listSoFar.clone());
+                    combinations.put(listSoFar.size(), new ArrayList<>());
+                    combinations.get(listSoFar.size()).add((ArrayList<ArrayList<Integer>>) listSoFar.clone());
                 }
             }
             for (int i = start; i < list.size(); i++) {

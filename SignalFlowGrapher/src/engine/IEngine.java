@@ -20,15 +20,15 @@ public interface IEngine {
     // CALCULATE TRANSFER FUNCTION
     public double calculateTFFunction(String fromNode, String toNode);
 
-    public ArrayList<ArrayList<String>> getForwardPaths();
+    public String getForwardPaths();
 
-    public ArrayList<ArrayList<String>> getLoops();
+    public String getLoops();
 
-    public Hashtable<Integer, ArrayList<ArrayList<ArrayList<String>>>> getCombinations();
+    public Hashtable<Integer, ArrayList<String>> getCombinations();
 
-    public double getDelta();
+    public String getDelta();
 
-    public ArrayList<Double> getDeltas();
+    public String getDeltas();
 
     public void clearCanvas();
 
