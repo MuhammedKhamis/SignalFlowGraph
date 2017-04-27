@@ -18,13 +18,15 @@ public class Engine implements IEngine {
 
     private Graph graph;
 
+    private double gain;
+
     public Engine() {
         // TODO Auto-generated constructor stub
         map = new HashMap<>();
         map1 = new HashMap<>();
         counter = 0;
         graph = Graph.getInstance();
-
+        gain = 0;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class Engine implements IEngine {
             return 0.0;
         }
         graph.solve(map.get(fromNode), map.get(toNode));
-        return graph.getGain();
+        return gain = graph.getGain();
     }
 
     public String getForwardPaths() {
@@ -106,7 +108,7 @@ public class Engine implements IEngine {
         return turnToString(loops);
     }
 
-    public Hashtable<Integer, ArrayList<String>> getCombinations() {
+    public String getCombinations() {
         Hashtable<Integer, ArrayList<ArrayList<ArrayList<Integer>>>> combinations = graph.getCombinations();
         Hashtable<Integer, ArrayList<ArrayList<ArrayList<String>>>> res = new Hashtable<>();
         Hashtable<Integer, ArrayList<String>> finalRes = new Hashtable<>();
@@ -133,19 +135,22 @@ public class Engine implements IEngine {
             Integer key = enumKey.nextElement();
             ArrayList<ArrayList<ArrayList<String>>> tmp = res.get(key);
             ArrayList<String> tmp2 = new ArrayList<>();
-            for (int i = 0; i < tmp.size()-1; i++) {
-                tmp2.add(turnToString(tmp.get(i))+", ");
+            for (int i = 0; i < tmp.size() - 1; i++) {
+                tmp2.add(turnToString(tmp.get(i)) + ", ");
             }
-            tmp2.add(turnToString(tmp.get(tmp.size()-1)));
+            tmp2.add(turnToString(tmp.get(tmp.size() - 1)));
             finalRes.put(key, tmp2);
         }
 
+        return hashToString(finalRes);
+    }
 
-        return finalRes;
+    public String getGain() {
+        return String.valueOf(gain);
     }
 
     public String getDelta() {
-        return "Delta: " +String.valueOf(graph.getDelta());
+        return "Delta: " + String.valueOf(graph.getDelta());
     }
 
     public String getDeltas() {
@@ -157,8 +162,26 @@ public class Engine implements IEngine {
         return builder.toString();
     }
 
+    private String hashToString(Hashtable<Integer, ArrayList<String>> hashtable) {
+        StringBuilder builder = new StringBuilder();
+        Enumeration<Integer> enumKey = hashtable.keys();
+        while (enumKey.hasMoreElements()) {
+            Integer key = enumKey.nextElement();
+            ArrayList<String> tmp = hashtable.get(key);
+            builder.append(key + " Non-Touching Loops\n");
+            for (int i = 0; i < tmp.size(); i++) {
+                builder.append(tmp.get(i) + "\n");
+            }
+        }
+        return builder.toString();
+    }
+
     public void clearCanvas() {
         graph = Graph.clearObject();
+        map1 = new HashMap<>();
+        map = new HashMap<>();
+        counter = 0;
+        gain = 0;
     }
 
     private String turnToString(ArrayList<ArrayList<String>> input) {

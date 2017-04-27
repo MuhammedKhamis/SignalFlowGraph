@@ -24,7 +24,7 @@ public interface IEngine {
 
     public String getLoops();
 
-    public Hashtable<Integer, ArrayList<String>> getCombinations();
+    public String getCombinations();
 
     public String getDelta();
 
